@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0ea5e9; /* Sky 500 */
+  --color-primary-dark: #0284c7; /* Sky 600 */
+  --color-secondary: #ec4899; /* Pink 500 */
+  --color-secondary-light: #fbcfe8; /* Pink 200 */
+  --color-bg-medical: #f8fafc; /* Slate 50 */
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+body {
+  @apply bg-[var(--color-bg-medical)] text-slate-800 antialiased;
+  font-family: var(--font-sans);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
