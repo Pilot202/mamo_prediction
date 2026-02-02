@@ -16,6 +16,7 @@ app = FastAPI(title="Breast Cancer Prediction API", description="API for Mammogr
 origins = [
     "http://localhost:5173", # Vite default
     "http://localhost:3000",
+    "https://mamo-frontend.onrender.com"
 ]
 
 app.add_middleware(
@@ -30,9 +31,29 @@ class ChatRequest(BaseModel):
     message: str
     api_key: str = None # Optional, normally passed from env or settings
 
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+# ... (Previous imports)
+
+# Mount static files (React build)
+# We expect the build output to be in 'app/static' inside the container
+static_dir = Path(__file__).parent / "static"
+if static_dir.exists():
+    app.mount("/assets", StaticFiles(directory=static_dir / "assets"), name="assets")
+
 @app.get("/")
-async def root():
-    return {"message": "Breast Cancer Prediction API is running"}
+async def serve_react_app():
+    if static_dir.exists():
+        return FileResponse(static_dir / "index.html")
+    return {"message": "Breast Cancer Prediction API is running (Frontend not found)"}
+
+# Catch-all for React Router (SPA)
+@app.exception_handler(404)
+async def custom_404_handler(request, exc):
+    if static_dir.exists():
+        return FileResponse(static_dir / "index.html")
+    return {"detail": "Not Found"}
 
 @app.post("/predict")
 async def predict(files: List[UploadFile] = File(...)):
